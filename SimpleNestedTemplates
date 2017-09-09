@@ -1,0 +1,57 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description": "Template for combining all templates into one nested template for testing.",
+  "Parameters": {
+    "VpcURL": {
+      "Type": "String",
+      "Default": "https://s3.amazonaws.com/mys3bucketacloudguru/vpc.template",
+      "Description": "Template URL for VPC Network."
+    },
+    "WordpressURL": {
+      "Type": "String",
+      "Default": "https://s3.amazonaws.com/mys3bucketacloudguru/wordpress.template",
+      "Description": "Template URL for Wordpress and RDS."
+    },
+    "s3URL": {
+      "Type": "String",
+      "Default": "https://s3.amazonaws.com/mys3bucketacloudguru/s3.template",
+      "Description": "Template URL for S3 Bucket."
+    }    
+  },
+  "Resources" : {
+    "Vpc" : {
+       "Type" : "AWS::CloudFormation::Stack",
+     	   "Properties" : {
+         "TemplateURL" : { "Ref": "VpcURL" },
+         "Parameters" :
+          {
+            "CIDRRange": "10.250.0.0"
+          }
+	       }
+    },
+    "Mys3Bucket" : {
+       "Type" : "AWS::CloudFormation::Stack",
+         "Properties" : {
+         "TemplateURL" : { "Ref": "s3URL" }
+       }
+    },
+    "WordpressApp" : {
+       "Type" : "AWS::CloudFormation::Stack",
+         "DependsOn" : "Vpc",         
+         "Properties" : {
+         "TemplateURL" : { "Ref": "WordpressURL" },
+         "Parameters" :
+          {
+            "VPCID"               : {"Fn::GetAtt": ["Vpc", "Outputs.VPCID"]},
+            "PrivateSubnets"      : {"Fn::Join": [",", [{"Fn::GetAtt": ["Vpc", "Outputs.SubnetPrivateAZ1"]}, {"Fn::GetAtt": ["Vpc", "Outputs.SubnetPrivateAZ2"]}]]},
+            "ELBSubnet"           : {"Fn::Join": [",", [{"Fn::GetAtt": ["Vpc", "Outputs.SubnetPublicAZ1"]}, {"Fn::GetAtt": ["Vpc", "Outputs.SubnetPublicAZ2"]}]]},
+            "DBUser"              : "mywordpressuser",
+            "DBPassword"          : "mysup3rs3cr3tP4sSw0rd"
+          }
+       }
+    }
+  },
+  "Outputs": {
+    "WordpressURL"  : { "Value": {"Fn::GetAtt": ["WordpressApp", "Outputs.WebsiteURL"]}}
+  }
+}
