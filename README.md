@@ -6,5 +6,5 @@
 4. [Simple Nested Template build from the above Templates](https://github.com/ashutoshvct/awscloudformationtemplates/blob/master/SimpleNestedTemplates)
 5. Portable and Resuable Template  
 [JSON](https://github.com/ashutoshvct/awscloudformationtemplates/blob/master/portabilityandreuse) | [YAML](https://github.com/ashutoshvct/awscloudformationtemplates/blob/master/portabilityandresue.yaml)
-6. WordPress User data 
+6. WordPress User data
 [JSON](https://github.com/ashutoshvct/awscloudformationtemplates/blob/master/wordpressuserdata) | [YAML](https://github.com/ashutoshvct/awscloudformationtemplates/blob/master/wordpressuserdata.yaml) 
